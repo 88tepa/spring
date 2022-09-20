@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.study.mapper.EmpMapper">
+	<!-- id에 Interface에서 정의한 메소드 이름을 넣는다. -->
+	<!-- resultType은 SQL결과 return type이다. -->
+	<!-- 쿼리의 컬럼이름과 VO 클래스의 변수이름은 동일해야 한다. -->
+	<!-- VO클래스에 Getter Setter를 만들어야 한다. 없으면 데이터를 넣을 수가 없다. -->
+	<select id="selectEmp" resultType="EmpVO">
+		SELECT
+			empno,
+			ename,
+			job,
+			mgr,
+			hiredate,
+			sal,
+			comm,
+			deptno
+		FROM emp
+	</select>
+
+	<!-- Mapper에서 정의한 메소드 이름을 ID에 꼭 입력한다! (매칭 작업) -->
+	<!-- id = 불러올수 있게 id 지정해주는것,  resultType = 불러올 곳 경로 -->
+	<select id="selectEmpOne" resultType="EmpVO">
+		SELECT
+			empno,
+			ename,
+			job,
+			mgr,
+			hiredate,
+			sal,
+			comm,
+			deptno
+		FROM emp
+		WHERE empno = #{empno}
+	</select>
+
+	<select id="selectDeptOne" resultType="DeptVO">
+		SELECT
+			deptno,
+			dname,
+			loc
+		FROM dept
+		WHERE deptno = #{deptno}
+	</select>
+
+	<!-- mybatis insert 문법 -->
+	<insert id="insertEmp">
+		INSERT INTO emp
+		(
+			empno,
+			ename,
+			job,
+			hiredate,
+			sal,
+			deptno
+		)
+		VALUES
+		(
+			#{empno},
+			#{ename},
+			#{job},
+			NOW(),
+			#{sal},
+			#{deptno}
+		)
+	</insert>
+
+	<!-- mybatis delete 문법 -->
+	<delete id="deleteEmp">
+		DELETE FROM emp
+		WHERE empno = #{empno}
+	</delete>
+
+	<!-- mybatis update 문법 -->
+	<!-- update, delete 쿼리에 where 조건을 쓰지않으면
+		 모든 데이터가 적용 받는다. where 필수! -->
+	<update id="updateEmp">
+		UPDATE emp
+		SET
+			sal = #{sal},
+			comm = #{comm},
+			deptno = #{deptno}
+		WHERE empno = #{empno}
+	</update>
+	
+	<select id="selectEmpName" resultType="EmpVO">
+		SELECT
+			empno,
+			ename,
+			job,
+			sal
+		FROM emp
+		WHERE ename = #{ename}
+	</select>
+	
+	<update id="updateEmpComm">
+		UPDATE emp
+		SET
+			comm = #{comm}
+		WHERE deptno = #{deptno}
+	</update>
+	
+	<select id="selectEmpSal2" resultType="EmpVO">
+		SELECT
+			empno,
+			ename,
+			job,
+			date_format(hiredate, '%Y') AS hiredate
+		FROM emp
+		WHERE sal >= #{sal}
+	</select>
+	
+	<!-- mybatis join 해보기 -->
+	<select id="selectEmpJoinDept" resultType="map">
+		SELECT
+			e.empno,
+			e.ename,
+			d.dname
+		FROM emp AS e
+		INNER JOIN dept AS d
+		ON e.deptno = d.deptno
+	</select>
+	
+	<select id="selectEmpJoinDeptLoc" resultType="map">
+		SELECT
+			e.empno,
+			e.ename,
+			e.deptno,
+			d.dname,
+			d.loc
+		FROM emp AS e
+		INNER JOIN dept AS d
+		ON e.deptno = d.deptno
+	</select>
+	
+	
+	
+	
+
+
+
+
+
+
+	
+
+	<!-- 오타가 잦다면 디비버에서 한번 실행시켜보고 쓰자 -->
+	<!-- ht'ml', x'ml'의 ml은 mark language 의 줄임말 -->
+</mapper>
